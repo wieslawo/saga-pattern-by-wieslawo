@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "4d2FQxkOk50iwynUCqK39f7UvQs6K5qTSPaPlO9JJUOHqWRECB+fPgETYzg5Byn7e69LdGD0GsE8TntjAANLuQ==",
+  "success": true,
+  "projectFilePath": "C:\\Wieslaw\\Learning\\SagaByW\\SagaByW.Tests\\SagaByW.Tests.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1803",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "You are running the 'restore' operation with an 'HTTP' source, 'http://nuget.openposition.io/nuget/katon'. Non-HTTPS access will be removed in a future version. Consider migrating to an 'HTTPS' source."
+    }
+  ]
+}

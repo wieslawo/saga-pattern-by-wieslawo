@@ -3,4 +3,5 @@
 /SagaByW/obj/
 /Saga.Orchestration/bin/
 /Saga.Orchestration/obj/
-
+/Saga.Orchestration.Tests/bin/
+/Saga.Orchestration.Tests/obj/
