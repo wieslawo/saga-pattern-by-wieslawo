@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SagaByW", "SagaByW\SagaByW.csproj", "{9BF2BADD-411C-4B8C-B706-C03AEDB42EB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saga.Orchestration", "Saga.Orchestration\Saga.Orchestration.csproj", "{50DE7079-0D70-4CA6-BEED-26E8C7160709}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9BF2BADD-411C-4B8C-B706-C03AEDB42EB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BF2BADD-411C-4B8C-B706-C03AEDB42EB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BF2BADD-411C-4B8C-B706-C03AEDB42EB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BF2BADD-411C-4B8C-B706-C03AEDB42EB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50DE7079-0D70-4CA6-BEED-26E8C7160709}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50DE7079-0D70-4CA6-BEED-26E8C7160709}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50DE7079-0D70-4CA6-BEED-26E8C7160709}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50DE7079-0D70-4CA6-BEED-26E8C7160709}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D1087EEB-216D-4D0C-84F3-99C9C9A99B65}
+	EndGlobalSection
+EndGlobal
