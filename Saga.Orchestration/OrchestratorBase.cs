@@ -31,9 +31,21 @@ namespace Saga.Orchestration
                             new SagaLog(sagaId, businessId, sagaAction.StepNumber,
                                 GetType().FullName,SagaStepState.Pending));
                         var result = await sagaAction.Function.Invoke();
-                        await _sagaLogPersister.SaveLog(
-                            new SagaLog(sagaId, businessId, sagaAction.StepNumber,
-                                GetType().FullName, SagaStepState.Success));
+                        if (result.Valid)
+                        {
+                            await _sagaLogPersister.SaveLog(
+                                new SagaLog(sagaId, businessId, sagaAction.StepNumber,
+                                    GetType().FullName, SagaStepState.Success));
+                        }
+                        else
+                        {
+                            await RollBackActions(sagaAction, sagaId, businessId);
+                            await _sagaLogPersister.SaveLog(
+                                new SagaLog(sagaId, businessId, sagaAction.StepNumber,
+                                    GetType().FullName, SagaStepState.Fail, result.Message));
+
+                            return SagaStepState.Fail;
+                        }
                     }
                     catch (Exception e)
                     {
