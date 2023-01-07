@@ -18,7 +18,7 @@ namespace Saga.Orchestration
 
         public async Task<SagaStepState> OrchestrateAsync(string businessId)
         {
-            var pendingSaga = await _sagaLogPersister.GetPendingForBusinessId(businessId);
+            var pendingSaga = await _sagaLogPersister.GetLastStepForBusinessId(businessId);
             if (pendingSaga == null)
             {
                 var sagaId = Guid.NewGuid();
@@ -47,6 +47,10 @@ namespace Saga.Orchestration
                 }
                
             }
+            else if (pendingSaga.StepState == SagaStepState.Fail)
+            {
+
+            }
             else
             {
                 //nothing to do ? or we have to check how long this status is ?
@@ -65,6 +69,9 @@ namespace Saga.Orchestration
                         GetType().FullName, SagaStepState.RollBacking));
                 if (actionToRollBack.RollbackFunction != null)
                     await actionToRollBack.RollbackFunction.Invoke();
+                await _sagaLogPersister.SaveLog(
+                    new SagaLog(sagaId, businessId, actionToRollBack.StepNumber,
+                        GetType().FullName, SagaStepState.Cancelled));
             }
         }
     }
