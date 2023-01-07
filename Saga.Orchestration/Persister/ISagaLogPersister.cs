@@ -6,6 +6,6 @@ namespace Saga.Orchestration.Persister
     {
         public Task<bool> SaveLog(SagaLog sagaLog);
         public Task<List<SagaLog>> GetPendings();
-        public Task<SagaLog?> GetPendingForBusinessId(string businessId);
+        public Task<SagaLog?> GetLastStepForBusinessId(string businessId);
     }
 }

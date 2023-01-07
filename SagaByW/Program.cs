@@ -1,5 +1,4 @@
 using Saga.Orchestration.Persister;
-using Saga.Orchestration.Utils;
 using SagaByW.Orchestrators;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +11,6 @@ builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ImportSaleOrchestrator>();
 builder.Services.AddScoped<ISagaLogPersister,SagaLogPersister>();
-builder.Services.AddScoped<ISagaLogger, SagaLogger>();
 
 var app = builder.Build();
 

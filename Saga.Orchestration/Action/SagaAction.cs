@@ -4,7 +4,7 @@
     {
         public SagaAction(string name, int stepNumber, 
             Func<Task<SagaActionResult>> function,
-            Func<Task<SagaActionResult>> rollbackFunction)
+            Func<Task<SagaActionResult>>? rollbackFunction)
         {
             Name = name;
             StepNumber = stepNumber;

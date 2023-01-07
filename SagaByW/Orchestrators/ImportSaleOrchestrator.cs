@@ -1,19 +1,19 @@
 ﻿using Saga.Orchestration;
 using Saga.Orchestration.Action;
 using Saga.Orchestration.Persister;
-using Saga.Orchestration.Utils;
 using System.Diagnostics;
 
 namespace SagaByW.Orchestrators
 {
     public class ImportSaleOrchestrator: OrchestratorBase
     {
-        public ImportSaleOrchestrator(ISagaLogPersister sagaLogPersister, ISagaLogger sagaLogger) : base(sagaLogPersister, sagaLogger)
+        public ImportSaleOrchestrator(ISagaLogPersister sagaLogPersister) : base(sagaLogPersister)
         {
             SagaActions = new List<SagaAction>
             {
-                new SagaAction("Step 1", 1, StepOneOfImport, StepOneOfImportRollback),
-                new SagaAction("Step 2", 2, StepTwoOfImport, StepTwoOfImportRollback)
+                new SagaAction("Step 1", 1, StepOneOfImport, null),
+                new SagaAction("Step 2", 2, StepTwoOfImport, StepTwoOfImportRollback),
+                new SagaAction("Step 3", 3, StepThreeOfImport, null)
             };
         }
 
@@ -23,16 +23,6 @@ namespace SagaByW.Orchestrators
             HttpClient client = new HttpClient();
             var response = await client.GetAsync("https://www.google.com");
 
-            return new SagaActionResult()
-            {
-                Message = "Ok"
-            };
-        }
-
-        public async Task<SagaActionResult> StepOneOfImportRollback()
-        {
-            Debug.WriteLine("Calling Google rollback");
-           
             return new SagaActionResult()
             {
                 Message = "Ok"
@@ -60,6 +50,18 @@ namespace SagaByW.Orchestrators
             return new SagaActionResult()
             {
                 Message = "Ok"
+            };
+        }
+
+
+        public async Task<SagaActionResult> StepThreeOfImport()
+        {
+            await Task.Delay(10);
+            throw new Exception("nie udałow się w trzecim kroku");
+
+            return new SagaActionResult()
+            {
+                Valid = false
             };
         }
     }
