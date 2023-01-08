@@ -18,10 +18,9 @@ public abstract class OrchestratorBase<T> where T: ITransactionItem
 
     public async Task<SagaStepState> OrchestrateAsync(T transactionItem)
     {
-        TransactionItem = transactionItem;
-        var businessId = transactionItem.GetBusinessId();
-        var pendingSaga = await _sagaLogPersister.GetLastStepForBusinessId(businessId);
-        if (pendingSaga == null)
+        TransactionItem = transactionItem; ;
+        var lastSagaLog = await _sagaLogPersister.GetLastStepForBusinessId(transactionItem.GetBusinessId());
+        if (lastSagaLog == null)
         {
             var orchestratorType = GetType().FullName;
             if (orchestratorType != null)
@@ -32,47 +31,37 @@ public abstract class OrchestratorBase<T> where T: ITransactionItem
                     try
                     {
                         await _sagaLogPersister.SaveLog(
-                            new SagaLog(sagaId, businessId, sagaAction.StepNumber,
+                            new SagaLog(sagaId, transactionItem.GetBusinessId(), sagaAction.StepNumber,
                                 orchestratorType, SagaStepState.Pending));
                         var result = await sagaAction.Function.Invoke();
                         if (result.Valid)
                         {
                             await _sagaLogPersister.SaveLog(
-                                new SagaLog(sagaId, businessId, sagaAction.StepNumber,
+                                new SagaLog(sagaId, transactionItem.GetBusinessId(), sagaAction.StepNumber,
                                     orchestratorType, SagaStepState.Success));
                         }
                         else
                         {
-                            await RollBackActions(sagaAction, sagaId, businessId, orchestratorType);
-                            await _sagaLogPersister.SaveLog(
-                                new SagaLog(sagaId, businessId, sagaAction.StepNumber,
-                                    orchestratorType, SagaStepState.Fail, result.Message));
-
+                            await RollBackActions(sagaAction, sagaId, transactionItem.GetBusinessId(), orchestratorType, result.Message);
                             return SagaStepState.Fail;
                         }
                     }
                     catch (Exception e)
                     {
-                        await RollBackActions(sagaAction, sagaId, businessId, orchestratorType);
-                        await _sagaLogPersister.SaveLog(
-                            new SagaLog(sagaId, businessId, sagaAction.StepNumber, 
-                                orchestratorType, SagaStepState.Fail, e.Message));
-
+                        await RollBackActions(sagaAction, sagaId, transactionItem.GetBusinessId(), orchestratorType, e.Message);
                         return SagaStepState.Fail;
                     }
                 }
-
                 await _sagaLogPersister.SaveLog(
-                    new SagaLog(sagaId, businessId, null,
+                    new SagaLog(sagaId, transactionItem.GetBusinessId(), null,
                     orchestratorType, SagaStepState.SuccessAll));
             }
             else
             {
                 throw new NotSupportedException("Orchestrator type not supported");
             }
-
         }
-        else if (pendingSaga.StepState == SagaStepState.Fail)
+        else if (lastSagaLog.StepState == SagaStepState.Fail)
         {
 
         }
@@ -84,7 +73,8 @@ public abstract class OrchestratorBase<T> where T: ITransactionItem
         return SagaStepState.SuccessAll;
     }
 
-    private async Task RollBackActions(SagaAction sagaAction, Guid sagaId, string businessId, string orchestratorType)
+    private async Task RollBackActions(SagaAction sagaAction, Guid sagaId, string businessId, 
+        string orchestratorType, string message)
     {
         foreach (var actionToRollBack in SagaActions!
                      .Where(s => s.StepNumber < sagaAction.StepNumber)
@@ -97,5 +87,8 @@ public abstract class OrchestratorBase<T> where T: ITransactionItem
             await _sagaLogPersister.SaveLog(
                 new SagaLog(sagaId, businessId, actionToRollBack.StepNumber,orchestratorType, SagaStepState.Cancelled));
         }
+        await _sagaLogPersister.SaveLog(
+            new SagaLog(sagaId, businessId, sagaAction.StepNumber,
+                orchestratorType, SagaStepState.Fail, message));
     }
 }
