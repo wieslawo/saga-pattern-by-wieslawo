@@ -25,14 +25,14 @@ namespace SagaByW_API_Test.Controllers
         [HttpGet("{id}")]
         public async Task<string> Add(int id)
         {
-            var sale = new SaleImport
+            var saleImport = new SaleImport
             {
                 SaleId = id,
                 SaleName = "sale_" + id,
                 ProductName = "product_" + id
             };
 
-            var result = await _importSaleOrchestrator.OrchestrateAsync(sale);
+            var result = await _importSaleOrchestrator.OrchestrateAsync(saleImport);
             return result.ToString();
         }
     }
