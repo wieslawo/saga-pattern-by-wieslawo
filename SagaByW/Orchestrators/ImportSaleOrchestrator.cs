@@ -33,7 +33,7 @@ namespace SagaByW_API_Test.Orchestrators
         public async Task<SagaActionResult> StepTwoOfImport()
         {
             await Task.Delay(10);
-            Debug.WriteLine("Drugi krok importu, product: " + TransactionItem!.ProducName );
+            Debug.WriteLine("Drugi krok importu, product: " + TransactionItem!.ProductName );
 
             return new SagaActionResult()
             {
@@ -45,7 +45,7 @@ namespace SagaByW_API_Test.Orchestrators
         public async Task<SagaActionResult> StepTwoOfImportRollback()
         {
             await Task.Delay(10);
-            Console.WriteLine(@"Drugi krok importu wycofany product: " + TransactionItem!.ProducName);
+            Console.WriteLine(@"Drugi krok importu wycofany product: " + TransactionItem!.ProductName);
 
             return new SagaActionResult()
             {

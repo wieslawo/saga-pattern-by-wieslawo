@@ -29,8 +29,7 @@ namespace SagaByW_API_Test.Controllers
             {
                 SaleId = id,
                 SaleName = "sale_" + id,
-                ProductId = id,
-                ProducName = "product_" + id
+                ProductName = "product_" + id
             };
 
             var result = await _importSaleOrchestrator.OrchestrateAsync(sale);

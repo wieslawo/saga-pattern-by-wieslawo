@@ -38,20 +38,18 @@ public class Saga_Sale_Import_Faild_Third_Step
             };
         }
 
-        public async Task<SagaActionResult> StepOneOfImport()
+        private async Task<SagaActionResult> StepOneOfImport()
         {
-            Debug.WriteLine("Calling Google for sale: " + TransactionItem!.SaleName);
-            HttpClient client = new HttpClient();
-            await client.GetAsync("https://www.google.com");
-
+            await Task.Delay(10);
+            Debug.WriteLine("Pierwszy krok for sale: " + TransactionItem!.SaleName);
+   
             return new SagaActionResult()
             {
                 Message = "Ok"
             };
         }
 
-
-        public async Task<SagaActionResult> StepTwoOfImport()
+        private async Task<SagaActionResult> StepTwoOfImport()
         {
             await Task.Delay(10);
             Debug.WriteLine("Drugi krok importu, product: " + TransactionItem!.ProducName);
@@ -62,8 +60,7 @@ public class Saga_Sale_Import_Faild_Third_Step
             };
         }
 
-
-        public async Task<SagaActionResult> StepTwoOfImportRollback()
+        private async Task<SagaActionResult> StepTwoOfImportRollback()
         {
             await Task.Delay(10);
             Console.WriteLine(@"Drugi krok importu wycofany product: " + TransactionItem!.ProducName);
@@ -74,8 +71,7 @@ public class Saga_Sale_Import_Faild_Third_Step
             };
         }
 
-
-        public async Task<SagaActionResult> StepThreeOfImport()
+        private async Task<SagaActionResult> StepThreeOfImport()
         {
             await Task.Delay(10);
             Console.WriteLine(@"Trzeci krok importu product: " + TransactionItem!.ProducName);
