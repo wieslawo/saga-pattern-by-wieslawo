@@ -42,13 +42,13 @@ public abstract class OrchestratorBase<T> where T: ITransactionItem
                         }
                         else
                         {
-                            await RollBackActions(sagaAction, sagaId, transactionItem.GetBusinessId(), orchestratorType, result.Message);
+                            await RollBackActions(sagaAction, sagaId, transactionItem, orchestratorType, result.Message);
                             return SagaStepState.Fail;
                         }
                     }
                     catch (Exception e)
                     {
-                        await RollBackActions(sagaAction, sagaId, transactionItem.GetBusinessId(), orchestratorType, e.Message);
+                        await RollBackActions(sagaAction, sagaId, transactionItem, orchestratorType, e.Message);
                         return SagaStepState.Fail;
                     }
                 }
@@ -73,7 +73,7 @@ public abstract class OrchestratorBase<T> where T: ITransactionItem
         return SagaStepState.SuccessAll;
     }
 
-    private async Task RollBackActions(SagaAction sagaAction, Guid sagaId, string businessId, 
+    private async Task RollBackActions(SagaAction sagaAction, Guid sagaId, T transactionItem, 
         string orchestratorType, string message)
     {
         foreach (var actionToRollBack in SagaActions!
@@ -81,14 +81,14 @@ public abstract class OrchestratorBase<T> where T: ITransactionItem
                      .OrderByDescending(s => s.StepNumber))
         {
             await _sagaLogPersister.SaveLog(
-                new SagaLog(sagaId, businessId, actionToRollBack.StepNumber, orchestratorType, SagaStepState.RollBacking));
+                new SagaLog(sagaId, transactionItem.GetBusinessId(), actionToRollBack.StepNumber, orchestratorType, SagaStepState.RollBacking));
             if (actionToRollBack.RollbackFunction != null)
                 await actionToRollBack.RollbackFunction.Invoke();
             await _sagaLogPersister.SaveLog(
-                new SagaLog(sagaId, businessId, actionToRollBack.StepNumber,orchestratorType, SagaStepState.Cancelled));
+                new SagaLog(sagaId, transactionItem.GetBusinessId(), actionToRollBack.StepNumber,orchestratorType, SagaStepState.Cancelled));
         }
         await _sagaLogPersister.SaveLog(
-            new SagaLog(sagaId, businessId, sagaAction.StepNumber,
+            new SagaLog(sagaId, transactionItem.GetBusinessId(), sagaAction.StepNumber,
                 orchestratorType, SagaStepState.Fail, message));
     }
 }
