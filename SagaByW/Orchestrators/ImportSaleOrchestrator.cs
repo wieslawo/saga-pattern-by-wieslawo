@@ -12,8 +12,8 @@ namespace SagaByW_API_Test.Orchestrators
         {
             SagaActions = new List<SagaAction>
             {
-                new SagaAction("Step 1", 1, StepOneOfImport, null),
-                new SagaAction("Step 2", 2, StepTwoOfImport, StepTwoOfImportRollback),
+                new SagaAction("Step 1", 1, StepOneOfImport, StepOneOfImportRollback),
+                new SagaAction("Step 2", 2, StepTwoOfImport, null),
             };
         }
 
@@ -29,6 +29,16 @@ namespace SagaByW_API_Test.Orchestrators
             };
         }
 
+        public async Task<SagaActionResult> StepOneOfImportRollback()
+        {
+            await Task.Delay(10);
+            Console.WriteLine(@"Pierwszy krok importu wycofany");
+
+            return new SagaActionResult()
+            {
+                Message = "Ok"
+            };
+        }
 
         public async Task<SagaActionResult> StepTwoOfImport()
         {
@@ -42,16 +52,7 @@ namespace SagaByW_API_Test.Orchestrators
         }
 
 
-        public async Task<SagaActionResult> StepTwoOfImportRollback()
-        {
-            await Task.Delay(10);
-            Console.WriteLine(@"Drugi krok importu wycofany product: " + TransactionItem!.ProductName);
-
-            return new SagaActionResult()
-            {
-                Message = "Ok"
-            };
-        }
+      
 
     }
 }
