@@ -16,14 +16,25 @@ public class Saga_Sale_Import_Faild_Third_Step
         {
             SaleId = 1,
             SaleName = "sale_1",
-            ProductId = 1,
-            ProducName = "product_1"
+            ProductName = "product_1"
         };
 
         var importSaleOrchestrator = new ImportSaleOrchestrator(new SagaLogPersister());
         var result = await importSaleOrchestrator.OrchestrateAsync(sale);
         
         Assert.Equal(SagaStepState.Fail, result);
+    }
+
+    private class SaleImport : ITransactionItem
+    {
+        public int SaleId { get; set; }
+        public string? SaleName { get; set; }
+        public string? ProductName { get; set; }
+
+        public string GetBusinessId()
+        {
+            return "SaleImport_" + SaleId;
+        }
     }
 
     private class ImportSaleOrchestrator : OrchestratorBase<SaleImport>
@@ -52,7 +63,7 @@ public class Saga_Sale_Import_Faild_Third_Step
         private async Task<SagaActionResult> StepTwoOfImport()
         {
             await Task.Delay(10);
-            Debug.WriteLine("Drugi krok importu, product: " + TransactionItem!.ProducName);
+            Debug.WriteLine("Drugi krok importu, product: " + TransactionItem!.ProductName);
 
             return new SagaActionResult()
             {
@@ -63,7 +74,7 @@ public class Saga_Sale_Import_Faild_Third_Step
         private async Task<SagaActionResult> StepTwoOfImportRollback()
         {
             await Task.Delay(10);
-            Console.WriteLine(@"Drugi krok importu wycofany product: " + TransactionItem!.ProducName);
+            Console.WriteLine(@"Drugi krok importu wycofany product: " + TransactionItem!.ProductName);
 
             return new SagaActionResult()
             {
@@ -74,21 +85,8 @@ public class Saga_Sale_Import_Faild_Third_Step
         private async Task<SagaActionResult> StepThreeOfImport()
         {
             await Task.Delay(10);
-            Console.WriteLine(@"Trzeci krok importu product: " + TransactionItem!.ProducName);
+            Console.WriteLine(@"Trzeci krok importu product: " + TransactionItem!.ProductName);
             throw new Exception("Problem w trzecim kroku");
-        }
-    }
-
-    private class SaleImport : ITransactionItem
-    {
-        public int SaleId { get; set; }
-        public string? SaleName { get; set; }
-        public int ProductId { get; set; }
-        public string? ProducName { get; set; }
-
-        public string GetBusinessId()
-        {
-            return "SaleImport_" + SaleId;
         }
     }
 }

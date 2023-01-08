@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Saga.Orchestration.Tests;
 
-public class Saga_Sale_Import_Three_Steps
+public class Saga_Sale_Import_Two_Steps
 {
     [Fact]
     public async Task Saga_Import()
@@ -16,8 +16,7 @@ public class Saga_Sale_Import_Three_Steps
         {
             SaleId = 1,
             SaleName = "sale_1",
-            ProductId = 1,
-            ProducName = "product_1"
+            ProductName = "product_1"
         };
 
         var importSaleOrchestrator = new ImportSaleOrchestrator(new SagaLogPersister());
@@ -31,8 +30,7 @@ public class Saga_Sale_Import_Three_Steps
     {
         public int SaleId { get; set; }
         public string? SaleName { get; set; }
-        public int ProductId { get; set; }
-        public string? ProducName { get; set; }
+        public string? ProductName { get; set; }
 
         public string GetBusinessId()
         {
@@ -48,8 +46,7 @@ public class Saga_Sale_Import_Three_Steps
             SagaActions = new List<SagaAction>
             {
                 new SagaAction("Step 1", 1, StepOneOfImport, null),
-                new SagaAction("Step 2", 2, StepTwoOfImport, StepTwoOfImportRollback),
-                new SagaAction("Step 3", 3, StepThreeOfImport, null)
+                new SagaAction("Step 2", 2, StepTwoOfImport, null),
             };
         }
 
@@ -64,41 +61,15 @@ public class Saga_Sale_Import_Three_Steps
             };
         }
 
-
         private async Task<SagaActionResult> StepTwoOfImport()
         {
             await Task.Delay(10);
-            Debug.WriteLine("Drugi krok importu, product: " + TransactionItem!.ProducName);
+            Debug.WriteLine("Drugi krok importu, product: " + TransactionItem!.ProductName);
 
             return new SagaActionResult()
             {
                 Message = "Ok"
             };
         }
-
-
-        private async Task<SagaActionResult> StepTwoOfImportRollback()
-        {
-            await Task.Delay(10);
-            Console.WriteLine(@"Drugi krok importu wycofany product: " + TransactionItem!.ProducName);
-
-            return new SagaActionResult()
-            {
-                Message = "Ok"
-            };
-        }
-
-
-        private async Task<SagaActionResult> StepThreeOfImport()
-        {
-            await Task.Delay(10);
-            Console.WriteLine(@"Trzeci krok importu product: " + TransactionItem!.ProducName);
-
-            return new SagaActionResult()
-            {
-                Message = "Ok"
-            };
-        }
-
     }
 }
