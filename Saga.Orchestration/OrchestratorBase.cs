@@ -1,6 +1,7 @@
 ﻿using Saga.Orchestration.Action;
 using Saga.Orchestration.Models;
 using Saga.Orchestration.Persister;
+using Saga.Orchestration.Retry;
 using Saga.Orchestration.TransactionItem;
 
 namespace Saga.Orchestration;
@@ -33,7 +34,11 @@ public abstract class OrchestratorBase<T> where T: ITransactionItem
                         await _sagaLogPersister.SaveLog(
                             new SagaLog(sagaId, transactionItem.GetBusinessId(), sagaAction.StepNumber,
                                 orchestratorType, SagaStepState.Pending));
-                        var result = await sagaAction.Function.Invoke();
+                        //var result = await sagaAction.Function.Invoke();
+
+                        var result = await RetryService.Do(sagaAction.Function,
+                            new RetryModel(sagaAction.RetryInterval, sagaAction.RetryAttempts));
+
                         if (result.Valid)
                         {
                             await _sagaLogPersister.SaveLog(
@@ -83,7 +88,8 @@ public abstract class OrchestratorBase<T> where T: ITransactionItem
             await _sagaLogPersister.SaveLog(
                 new SagaLog(sagaId, transactionItem.GetBusinessId(), actionToRollBack.StepNumber, orchestratorType, SagaStepState.RollBacking));
             if (actionToRollBack.RollbackFunction != null)
-                await actionToRollBack.RollbackFunction.Invoke();
+                await RetryService.Do(actionToRollBack.RollbackFunction,
+                    new RetryModel(actionToRollBack.RetryRollbackInterval, actionToRollBack.RetryRollbackAttempts));
             await _sagaLogPersister.SaveLog(
                 new SagaLog(sagaId, transactionItem.GetBusinessId(), actionToRollBack.StepNumber,orchestratorType, SagaStepState.Cancelled));
         }
