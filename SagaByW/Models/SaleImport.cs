@@ -1,6 +1,6 @@
 ﻿using Saga.Orchestration.TransactionItem;
 
-namespace SagaByW.Models;
+namespace SagaByW_API_Test.Models;
 
 public class SaleImport:ITransactionItem
 {

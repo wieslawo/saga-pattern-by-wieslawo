@@ -1,10 +1,10 @@
-﻿using Saga.Orchestration;
+﻿using System.Diagnostics;
+using Saga.Orchestration;
 using Saga.Orchestration.Action;
 using Saga.Orchestration.Persister;
-using System.Diagnostics;
-using SagaByW.Models;
+using SagaByW_API_Test.Models;
 
-namespace SagaByW.Orchestrators
+namespace SagaByW_API_Test.Orchestrators
 {
     public class ImportSaleOrchestrator: OrchestratorBase<SaleImport>
     {
@@ -14,7 +14,6 @@ namespace SagaByW.Orchestrators
             {
                 new SagaAction("Step 1", 1, StepOneOfImport, null),
                 new SagaAction("Step 2", 2, StepTwoOfImport, StepTwoOfImportRollback),
-                new SagaAction("Step 3", 3, StepThreeOfImport, null)
             };
         }
 
@@ -54,11 +53,5 @@ namespace SagaByW.Orchestrators
             };
         }
 
-
-        public async Task<SagaActionResult> StepThreeOfImport()
-        {
-            await Task.Delay(10);
-            throw new Exception("Nie udało się w trzecim kroku");
-        }
     }
 }

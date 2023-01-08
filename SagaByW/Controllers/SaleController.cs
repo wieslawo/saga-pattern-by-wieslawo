@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SagaByW.Models;
-using SagaByW.Orchestrators;
+using SagaByW_API_Test.Models;
+using SagaByW_API_Test.Orchestrators;
 
-namespace SagaByW.Controllers
+namespace SagaByW_API_Test.Controllers
 {
 
     [Route("api/[controller]")]
