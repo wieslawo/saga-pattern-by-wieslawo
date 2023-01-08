@@ -81,7 +81,7 @@ public abstract class OrchestratorBase<T> where T: ITransactionItem
             //nothing to do ? or we have to check how long this status is ?
         }
            
-        return SagaStepState.Success;
+        return SagaStepState.SuccessAll;
     }
 
     private async Task RollBackActions(SagaAction sagaAction, Guid sagaId, string businessId, string orchestratorType)
