@@ -10,7 +10,7 @@ namespace Saga.Orchestration.Tests;
 public class Saga_Sale_Import_Two_Steps
 {
     [Fact]
-    public async Task Saga_Import()
+    public async Task Saga_Imported()
     {
         var sale = new SaleImport
         {

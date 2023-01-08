@@ -10,7 +10,7 @@ namespace Saga.Orchestration.Tests;
 public class Saga_Sale_Import_Faild_Third_Step
 {
     [Fact]
-    public async Task Saga_Not_Import()
+    public async Task Saga_Not_Imported()
     {
         var sale = new SaleImport
         {
