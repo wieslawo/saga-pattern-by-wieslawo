@@ -2,10 +2,11 @@
 using Saga.Orchestration.Action;
 using Saga.Orchestration.Persister;
 using System.Diagnostics;
+using SagaByW.Models;
 
 namespace SagaByW.Orchestrators
 {
-    public class ImportSaleOrchestrator: OrchestratorBase
+    public class ImportSaleOrchestrator: OrchestratorBase<SaleImport>
     {
         public ImportSaleOrchestrator(ISagaLogPersister sagaLogPersister) : base(sagaLogPersister)
         {
@@ -19,9 +20,9 @@ namespace SagaByW.Orchestrators
 
         public async Task<SagaActionResult> StepOneOfImport()
         {
-            Debug.WriteLine("Calling Google");
+            Debug.WriteLine("Calling Google for sale: " + TransactionItem!.SaleName);
             HttpClient client = new HttpClient();
-            var response = await client.GetAsync("https://www.google.com");
+            await client.GetAsync("https://www.google.com");
 
             return new SagaActionResult()
             {
@@ -33,7 +34,7 @@ namespace SagaByW.Orchestrators
         public async Task<SagaActionResult> StepTwoOfImport()
         {
             await Task.Delay(10);
-            Debug.WriteLine("Druki krok importu");
+            Debug.WriteLine("Drugi krok importu, product: " + TransactionItem!.ProducName );
 
             return new SagaActionResult()
             {
@@ -45,7 +46,7 @@ namespace SagaByW.Orchestrators
         public async Task<SagaActionResult> StepTwoOfImportRollback()
         {
             await Task.Delay(10);
-            Console.WriteLine("Druki krok importu wycofany");
+            Console.WriteLine(@"Drugi krok importu wycofany product: " + TransactionItem!.ProducName);
 
             return new SagaActionResult()
             {
@@ -57,12 +58,7 @@ namespace SagaByW.Orchestrators
         public async Task<SagaActionResult> StepThreeOfImport()
         {
             await Task.Delay(10);
-            throw new Exception("nie udałow się w trzecim kroku");
-
-            return new SagaActionResult()
-            {
-                Valid = false
-            };
+            throw new Exception("Nie udało się w trzecim kroku");
         }
     }
 }

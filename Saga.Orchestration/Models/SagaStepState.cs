@@ -1,11 +1,11 @@
-﻿namespace Saga.Orchestration.Models
+﻿namespace Saga.Orchestration.Models;
+
+public enum SagaStepState
 {
-    public enum SagaStepState
-    {
-        Pending,
-        RollBacking,
-        Success,
-        Cancelled,
-        Fail,
-    }
+    Pending,
+    Success,
+    SuccessAll,
+    RollBacking,
+    Cancelled,
+    Fail
 }

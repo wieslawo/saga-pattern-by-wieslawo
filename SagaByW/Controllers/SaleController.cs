@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SagaByW.Models;
 using SagaByW.Orchestrators;
 
 namespace SagaByW.Controllers
@@ -22,10 +23,17 @@ namespace SagaByW.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<string> Add(string id)
+        public async Task<string> Add(int id)
         {
-            var businessId = $"Import_Order_{id}";
-            var result = await _importSaleOrchestrator.OrchestrateAsync(businessId);
+            var sale = new SaleImport
+            {
+                SaleId = id,
+                SaleName = "sale_" + id,
+                ProductId = id,
+                ProducName = "product_" + id
+            };
+
+            var result = await _importSaleOrchestrator.OrchestrateAsync(sale);
             return result.ToString();
         }
     }
